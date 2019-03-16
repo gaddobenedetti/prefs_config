@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:prefs_config/prefs_config.dart';
 
-class PrefExample extends StatefulWidget {
+class PrefsExample extends StatefulWidget {
   @override
-  _PrefExampleState createState() => _PrefExampleState();
+  _PrefsExampleState createState() => _PrefsExampleState();
 }
 
-class _PrefExampleState extends State<PrefExample> {
+class _PrefsExampleState extends State<PrefsExample> {
   Prefs p;
   String prefScreenTitle;
 
@@ -175,7 +175,3 @@ class _PrefExampleState extends State<PrefExample> {
     );
   }
 }
-
-
-
-/******************************************************************************/

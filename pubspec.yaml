@@ -1,9 +1,8 @@
 name: prefs_config
-description: >-
-  A new Flutter package.
-version: 0.0.1
-author: Gaddo F Benedetti
-homepage: http://www.gfb-consulting.com/
+description: Dart Plugin for generating Settings/Preference screen for Flutter.
+version: 0.8.0
+author: Gaddo F Benedetti <gaddo@gfb-consulting.com>
+homepage: https://github.com/gaddobenedetti/prefs_config
 
 environment:
   sdk: ">=2.0.0-dev.68.0 <3.0.0"

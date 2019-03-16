@@ -189,6 +189,21 @@ class Prefs {
       this.preferences.removeAt(id);
   }
 
+  Future<Pref> overrideEnabledAttr (Pref pref) async {
+    if (pref != null && pref.dependancy != null) {
+      Pref parent = getPref(pref.dependancy);
+      if (parent != null && parent.type == Pref.TYPE_BOOL) {
+        if (parent.value == null) {
+          pref.enabled = await getBool(parent.prefKey);
+        } else {
+          pref.enabled = parent.value;
+        }
+        setPref(pref);
+      }
+    }
+    return pref;
+  }
+
   void buildPreferencesScreen(BuildContext context, String title) {
     if (this.preferences != null &&this.preferences.length > 0)
       Navigator.push(
@@ -209,21 +224,6 @@ class Prefs {
       }
     }
     return -1;
-  }
-
-  Future<Pref> overrideEnabledAttr (Pref pref) async {
-    if (pref != null && pref.dependancy != null) {
-      Pref parent = getPref(pref.dependancy);
-      if (parent != null && parent.type == Pref.TYPE_BOOL) {
-        if (parent.value == null) {
-          pref.enabled = await getBool(parent.prefKey);
-        } else {
-          pref.enabled = parent.value;
-        }
-        setPref(pref);
-      }
-    }
-    return pref;
   }
 
 }
