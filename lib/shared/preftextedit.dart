@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:prefs_config/prefs_config.dart';
 
 class PrefTextEdit extends StatefulWidget {
-
   final Pref pref;
 
   const PrefTextEdit({this.pref});
@@ -12,7 +11,6 @@ class PrefTextEdit extends StatefulWidget {
 }
 
 class _PrefTextEditState extends State<PrefTextEdit> {
-
   final prefEditController = TextEditingController();
   bool _canUpdate;
 
@@ -23,17 +21,14 @@ class _PrefTextEditState extends State<PrefTextEdit> {
     super.initState();
   }
 
-  bool _validatePref (Pref pref, String value) {
+  bool _validatePref(Pref pref, String value) {
     bool isValid = true;
-    if (pref.value.toString() == value.toString())
-      isValid = false;
+    if (pref.value.toString() == value.toString()) isValid = false;
 
     if (pref.type == Pref.TYPE_INT) {
       int num = int.parse(value) == null ? 0 : int.parse(value);
-      if (pref.min != null && num < pref.min)
-        isValid = false;
-      if (pref.max != null && num > pref.max)
-        isValid = false;
+      if (pref.min != null && num < pref.min) isValid = false;
+      if (pref.max != null && num > pref.max) isValid = false;
     } else {
       switch (pref.format) {
         case Pref.FORMAT_TEXT_EMAIL:
@@ -57,8 +52,7 @@ class _PrefTextEditState extends State<PrefTextEdit> {
           int len = value == null ? 0 : value.toString().length;
           int min = pref.min == null ? 0 : pref.min;
           int max = pref.max == null ? 0 : pref.max;
-          if ((len < min) || (len > max && max > 0))
-            isValid = false;
+          if ((len < min) || (len > max && max > 0)) isValid = false;
       }
     }
 
@@ -92,7 +86,8 @@ class _PrefTextEditState extends State<PrefTextEdit> {
         controller: this.prefEditController,
         onChanged: (text) {
           setState(() {
-            this._canUpdate = _validatePref(widget.pref, this.prefEditController.text);
+            this._canUpdate =
+                _validatePref(widget.pref, this.prefEditController.text);
           });
         },
         keyboardType: kbt,
@@ -106,15 +101,13 @@ class _PrefTextEditState extends State<PrefTextEdit> {
                 setState(() {
                   Navigator.pop(context, this.prefEditController.text);
                 });
-            }
-        ),
+            }),
         IconButton(
             icon: Icon(Icons.cancel),
             color: Colors.red,
             onPressed: () => setState(() {
-              Navigator.pop(context, null);
-            })
-        ),
+                  Navigator.pop(context, null);
+                })),
       ],
     );
   }

@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:prefs_config/prefs_config.dart';
 import 'package:prefs_config/shared/pref_shared.dart';
 
-
 class PrefHeader extends PrefItem {
-
   Pref pref;
   Function actionFunc;
 
@@ -13,7 +11,7 @@ class PrefHeader extends PrefItem {
   }
 
   @override
-  Widget prefWrapper () {
+  Widget prefWrapper() {
     if (pref.label == null || pref.label.length == 0) {
       return Container(width: 0.0, height: 0.0);
     } else {
@@ -26,12 +24,10 @@ class PrefHeader extends PrefItem {
             style: TextStyle(
                 fontFamily: "Roboto",
                 fontSize: 20.0,
-                fontWeight: FontWeight.bold
-            ),
+                fontWeight: FontWeight.bold),
           ),
         ),
       );
     }
   }
-
 }

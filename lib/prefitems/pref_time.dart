@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 import 'package:prefs_config/prefs_config.dart';
 import 'package:prefs_config/shared/pref_shared.dart';
 
-
 class PrefTime extends PrefItem {
-
   Pref pref;
   BuildContext context;
   Function actionFunc;
@@ -15,7 +14,7 @@ class PrefTime extends PrefItem {
   }
 
   @override
-  Widget prefValue () {
+  Widget prefValue() {
     DateTime date = DateTime.now();
     try {
       date = DateTime.parse(this.pref.value.toString());
@@ -30,7 +29,7 @@ class PrefTime extends PrefItem {
     );
   }
 
-  Future<void> editDialog () async {
+  Future<void> editDialog() async {
     DateTime date = DateTime.now();
     try {
       date = DateTime.parse(pref.value.toString());
@@ -42,26 +41,16 @@ class PrefTime extends PrefItem {
     );
 
     if (time != null) {
-      date = DateTime(
-          date.year,
-          date.month,
-          date.day,
-          time.hour,
-          time.minute,
-          date.second,
-          date.millisecond,
-          date.microsecond
-      );
+      date = DateTime(date.year, date.month, date.day, time.hour, time.minute,
+          date.second, date.millisecond, date.microsecond);
       this.pref.value = date;
       this.callback(this.pref);
     }
-
   }
 
-  String _formatTime (DateTime time) {
+  String _formatTime(DateTime time) {
     String h = (time.hour < 10 ? '0' : '') + time.hour.toString();
     String m = (time.minute < 10 ? '0' : '') + time.minute.toString();
     return h + ':' + m;
   }
-
 }

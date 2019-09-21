@@ -73,12 +73,21 @@ class _PrefsExampleState extends State<PrefsExample> {
           description: "This is a Bool Switch Setting"
       ),
       Pref(
-          prefKey: "lst_options",
+          prefKey: "lst_options1",
+          type: Pref.TYPE_LIST,
+          defVal: 6,
+          label: "List Pref",
+          format: Pref.FORMAT_LIST_DIALOG,
+          listItems: myList,
+          description: "This is a Dialog List Setting"
+      ),
+      Pref(
+          prefKey: "lst_options2",
           type: Pref.TYPE_LIST,
           defVal: 6,
           label: "List Pref",
           listItems: myList,
-          description: "This is a List Setting"
+          description: "This is a Dropdown List Setting"
       ),
       Pref(
           prefKey: "bol_check",

@@ -1,6 +1,7 @@
 library prefs_config;
 
 import 'package:flutter/material.dart';
+import 'dart:async';
 
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:prefs_config/prefitems/pref_text.dart';
@@ -54,6 +55,9 @@ class Pref {
   static const int FORMAT_DATE_MDY        = 231;
   static const int FORMAT_DATE_YMD        = 232;
 
+  static const int FORMAT_LIST_DROPDOWN   = 240; // Default List Format
+  static const int FORMAT_LIST_DIALOG     = 241;
+
   Pref({
     this.prefKey,
     this.defVal,
@@ -68,7 +72,8 @@ class Pref {
     this.format,
     this.max,
     this.min
-  });
+  }) : assert(prefKey != null),
+        assert(type != null);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -87,6 +92,30 @@ class Prefs {
       }
     this.preferences = prefs.values.toList();
   }
+
+//  Future<void> _initPrefs () async {
+//    for (int i = 0; i < this.preferences.length; i++) {
+//      switch (this.preferences[i].type) {
+//        case Pref.TYPE_BOOL:
+//          this.preferences[i].value = await getBool(this.preferences[i].prefKey);
+//          break;
+//        case Pref.TYPE_TEXT:
+//          this.preferences[i].value = await getString(this.preferences[i].prefKey);
+//          break;
+//        case Pref.TYPE_INT:
+//        case Pref.TYPE_LIST:
+//        this.preferences[i].value = await getInt(this.preferences[i].prefKey);
+//          break;
+//        case Pref.TYPE_DATE:
+//        case Pref.TYPE_TIME:
+//        this.preferences[i].value = await getDateTime(this.preferences[i].prefKey);
+//          break;
+//        case Pref.TYPE_HEADER:
+//        case Pref.TYPE_FUNCTION:
+//          break;
+//      }
+//    }
+//  }
 
   Future<bool> getBool (String prefKey) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -232,8 +261,8 @@ class Prefs {
 
 class PreferenceContainer extends StatefulWidget {
 
-  List<Pref> preferences;
-  String title;
+  final List<Pref> preferences;
+  final String title;
 
   PreferenceContainer ({ this.preferences, this.title });
 
@@ -375,7 +404,7 @@ class _PreferenceContainerState extends State<PreferenceContainer> {
                 }
             );
           } else {
-            Container(height: 0.0, width: 0.0,);
+            return Container(height: 0.0, width: 0.0,);
           }
         },
       ),

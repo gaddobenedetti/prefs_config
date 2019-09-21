@@ -1,25 +1,23 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 import 'package:prefs_config/prefs_config.dart';
 import 'package:prefs_config/shared/pref_shared.dart';
 import 'package:prefs_config/shared/preftextedit.dart';
 
-
 class PrefText extends PrefItem {
-
   Pref pref;
   BuildContext context;
   Function actionFunc;
   Function callback;
 
-  PrefText ({this.pref, this.context, this.callback}) {
+  PrefText({this.pref, this.context, this.callback}) {
     this.actionFunc = editDialog;
   }
 
   @override
-  Widget prefValue () {
+  Widget prefValue() {
     String text = pref.value.toString();
-    if(text.length > 15)
-      text = text.substring(0, 14) + '...';
+    if (text.length > 15) text = text.substring(0, 14) + '...';
     return Text(
       text,
       style: TextStyle(
@@ -30,10 +28,12 @@ class PrefText extends PrefItem {
     );
   }
 
-  Future<void> editDialog () async {
+  Future<void> editDialog() async {
     String result = await showDialog(
       context: this.context,
-      builder: (BuildContext context) => PrefTextEdit(pref: this.pref,),
+      builder: (BuildContext context) => PrefTextEdit(
+        pref: this.pref,
+      ),
     );
 
     if (result != null) {
@@ -41,5 +41,4 @@ class PrefText extends PrefItem {
       this.callback(pref);
     }
   }
-
 }

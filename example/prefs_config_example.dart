@@ -29,7 +29,8 @@ class _PrefsExampleState extends State<PrefsExample> {
     /// description: Description text for the preference used in the prefs screen.
     /// visible: Whether a preference is editable via the prefs screen.
     /// enabled: Whether a preference is enabled (does not affect headers).
-    /// format: An optional value that affects the behaviour/appearance of the preference when edited.
+    /// format: An optional value that affects the behaviour/appearance of the
+    /// preference when edited.
     ///
     /// Additional notes to properties are below.
     List<Pref> prefs = [
@@ -66,12 +67,21 @@ class _PrefsExampleState extends State<PrefsExample> {
           description: "This is a Bool Switch Setting"
       ),
       Pref(
-          prefKey: "lst_options",
+          prefKey: "lst_options1",
+          type: Pref.TYPE_LIST,
+          defVal: 6,
+          label: "List Pref",
+          format: Pref.FORMAT_LIST_DIALOG,
+          listItems: myList,
+          description: "This is a Dialog List Setting"
+      ),
+      Pref(
+          prefKey: "lst_options2",
           type: Pref.TYPE_LIST,
           defVal: 6,
           label: "List Pref",
           listItems: myList,
-          description: "This is a List Setting"
+          description: "This is a Dropdown List Setting"
       ),
       Pref(
           prefKey: "bol_check",

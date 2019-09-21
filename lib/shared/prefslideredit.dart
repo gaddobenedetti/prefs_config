@@ -25,7 +25,7 @@ class _PrefSliderEditState extends State<PrefSliderEdit> {
     super.initState();
   }
 
-  bool _validatePref (double newValue) {
+  bool _validatePref(double newValue) {
     int oldValue = double.parse(widget.pref.value.toString()).floor();
     return newValue.floor() != oldValue;
   }
@@ -62,12 +62,14 @@ class _PrefSliderEditState extends State<PrefSliderEdit> {
 
     return AlertDialog(
       title: Text(widget.pref.label),
-      content: ListView.builder(
-          shrinkWrap: true,
-          itemCount: 1,
-          itemBuilder: (BuildContext context, int index) {
-            return dialog[index];
-          }
+      content: Container(
+        width: MediaQuery.of(context).size.width,
+        child: ListView.builder(
+            shrinkWrap: true,
+            itemCount: 1,
+            itemBuilder: (BuildContext context, int index) {
+              return dialog[index];
+            }),
       ),
       actions: <Widget>[
         IconButton(
@@ -75,18 +77,19 @@ class _PrefSliderEditState extends State<PrefSliderEdit> {
             color: this._canUpdate ? Colors.green : Colors.grey,
             onPressed: () {
               if (this._canUpdate)
-                setState(() { Navigator.pop(context, this._value.floor()); });
-            }
-        ),
+                setState(() {
+                  Navigator.pop(context, this._value.floor());
+                });
+            }),
         IconButton(
             icon: Icon(Icons.cancel),
             color: Colors.red,
             onPressed: () {
-              setState(() { Navigator.pop(context, null); });
-            }
-        ),
+              setState(() {
+                Navigator.pop(context, null);
+              });
+            }),
       ],
     );
   }
 }
-

@@ -24,37 +24,40 @@ class _PrefListEditState extends State<PrefListEdit> {
     String title = widget.pref.label == null ? "" : widget.pref.label.toString();
     return AlertDialog(
       title: Text(title),
-      content: ListView.builder(
-          shrinkWrap: true,
-          itemCount: widget.pref.listItems.length,
-          itemBuilder: (BuildContext context, int i) {
-            FontWeight selected = FontWeight.normal;
-            if (widget.pref.value == widget.pref.listItems.keys.toList()[i])
-              selected = FontWeight.bold;
-            return Card(
-              child: Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: FlatButton(
-                    child: Text(
-                      widget.pref.listItems[i],
-                      style: TextStyle(
-                        fontFamily: "Roboto",
-                        fontSize: 18.0,
-                        fontWeight: selected,
+      content: Container(
+        width: MediaQuery.of(context).size.width,
+        child: ListView.builder(
+            shrinkWrap: true,
+            itemCount: widget.pref.listItems.length,
+            itemBuilder: (BuildContext context, int i) {
+              FontWeight selected = FontWeight.normal;
+              if (widget.pref.value == widget.pref.listItems.keys.toList()[i])
+                selected = FontWeight.bold;
+              return Card(
+                child: Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: FlatButton(
+                      child: Text(
+                        widget.pref.listItems[i],
+                        style: TextStyle(
+                          fontFamily: "Roboto",
+                          fontSize: 18.0,
+                          fontWeight: selected,
+                        ),
                       ),
+                      onPressed: () {
+                        setState(() {
+                          int newValue = widget.pref.listItems.keys.toList()[i];
+                          Navigator.pop(context, newValue);
+                        });
+                      },
                     ),
-                    onPressed: () {
-                      setState(() {
-                        int newValue = widget.pref.listItems.keys.toList()[i];
-                        Navigator.pop(context, newValue);
-                      });
-                    },
                   ),
                 ),
-              ),
-            );
-          }
+              );
+            }
+        ),
       ),
     );
   }
