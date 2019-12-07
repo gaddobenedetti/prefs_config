@@ -140,7 +140,7 @@ class Prefs {
     if (p == null) {
       return null;
     } else {
-      return prefs.getString(prefKey) ?? p.defVal.toString();
+      return prefs.getString(prefKey) ?? p.defVal;
     }
   }
 

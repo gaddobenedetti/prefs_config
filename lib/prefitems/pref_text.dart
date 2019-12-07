@@ -16,7 +16,7 @@ class PrefText extends PrefItem {
 
   @override
   Widget prefValue() {
-    String text = pref.value.toString();
+    String text = pref.value == null ? '' : pref.value.toString();
     if (text.length > 15) text = text.substring(0, 14) + '...';
     return Text(
       text,

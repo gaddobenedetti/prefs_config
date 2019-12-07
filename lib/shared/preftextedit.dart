@@ -16,7 +16,9 @@ class _PrefTextEditState extends State<PrefTextEdit> {
 
   @override
   void initState() {
-    this.prefEditController.text = widget.pref.value.toString();
+    this.prefEditController.text = '';
+    if (widget.pref.value != null)
+      this.prefEditController.text = widget.pref.value.toString();
     this._canUpdate = false;
     super.initState();
   }

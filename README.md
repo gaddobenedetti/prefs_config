@@ -35,7 +35,7 @@ This object allows the description of a preference, both in terms of data and al
    * **Int**. Int preference type. The _format_ property may be used so it can input as _text input_ or using a _slider_ (max and min properties are required for the latter). Default is as a _text input_.
    * **Date**. DateTime preference type. The _format_ property may be used so it can displayed in _dd/mm/yyyy_, _mm/dd/yyyy_, _yyyy/mm/dd_ format. Default is _dd/mm/yyyy_.
    * **Time**. DateTime preference type.
-   * **List**. Int preference type. The _format_ property may be used so it can be displayed as either a _dropdown_ or as a seperate_dialog_ input. Default is as a _dropdown_ input.
+   * **List**. Int preference type. The _format_ property may be used so it can be displayed as either a _dropdown_ or as a seperate _dialog_ input. Default is as a _dropdown_ input.
    * **Header**. Special Preference Type. A list header sub-label. The _defVal_ property may be used to assign a background color
    * **Function**. Special Preference Type. A list item that triggers a call to a function.
 * **defVal**. Dynamic. The default value of the preference, when first created.
