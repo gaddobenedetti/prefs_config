@@ -1,32 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:prefs_config/prefs_config.dart';
+import '../prefs_config.dart';
 
 class PrefItem {
   Pref pref;
-  BuildContext context;
-  Function actionFunc;
-  Function callback;
+  BuildContext? context;
+  Function()? actionFunc;
+  Function? callback;
 
-  PrefItem({this.pref, this.context, this.callback}) {
-    this.actionFunc = null;
-  }
+  PrefItem({required this.pref, this.context, this.callback});
 
   Widget getItem() {
-    if (this.pref == null) {
-      return Container(width: 0.0, height: 0.0);
-    } else {
-      Widget wrapper = prefWrapper();
-      return this.actionFunc == null || !this.pref.enabled
-          ? wrapper
-          : GestureDetector(onTap: () => this.actionFunc(), child: wrapper);
-    }
+    Widget wrapper = prefWrapper();
+    return actionFunc == null || !pref.enabled
+        ? wrapper
+        : GestureDetector(onTap: actionFunc, child: wrapper);
   }
 
   Widget prefWrapper() {
-    String label = this.pref.label == null ? "" : this.pref.label;
-    String description =
-        this.pref.description == null ? "" : this.pref.description;
-
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -43,21 +33,21 @@ class PrefItem {
                         Padding(
                           padding: const EdgeInsets.only(bottom: 8.0),
                           child: Text(
-                            label,
+                            pref.label,
                             style: TextStyle(
                               fontFamily: "Roboto",
                               fontSize: 18.0,
                               fontWeight: FontWeight.bold,
-                              color: this.pref.enabled ? null : Colors.grey,
+                              color: pref.enabled ? null : Colors.grey,
                             ),
                           ),
                         ),
                         Text(
-                          description,
+                          pref.description,
                           style: TextStyle(
                             fontFamily: "Roboto",
                             fontSize: 14.0,
-                            color: this.pref.enabled ? null : Colors.grey,
+                            color: pref.enabled ? null : Colors.grey,
                           ),
                         ),
                       ]),
@@ -73,6 +63,6 @@ class PrefItem {
   }
 
   Widget prefValue() {
-    return Container(width: 0.0, height: 0.0);
+    return const SizedBox(width: 0.0, height: 0.0);
   }
 }

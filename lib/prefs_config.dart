@@ -1,142 +1,121 @@
 library prefs_config;
 
+// ignore_for_file: constant_identifier_names
+
 import 'package:flutter/material.dart';
 import 'dart:async';
 
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:prefs_config/prefitems/pref_text.dart';
-import 'package:prefs_config/prefitems/pref_int.dart';
-import 'package:prefs_config/prefitems/pref_bool.dart';
-import 'package:prefs_config/prefitems/pref_date.dart';
-import 'package:prefs_config/prefitems/pref_time.dart';
-import 'package:prefs_config/prefitems/pref_list.dart';
-import 'package:prefs_config/prefitems/pref_header.dart';
-import 'package:prefs_config/prefitems/pref_function.dart';
-
+import 'prefitems/pref_text.dart';
+import 'prefitems/pref_int.dart';
+import 'prefitems/pref_bool.dart';
+import 'prefitems/pref_date.dart';
+import 'prefitems/pref_time.dart';
+import 'prefitems/pref_list.dart';
+import 'prefitems/pref_header.dart';
+import 'prefitems/pref_function.dart';
 
 class Pref {
-
   String prefKey;
-  var defVal;
+  dynamic defVal;
   bool visible;
   bool enabled;
-  String dependancy;
+  String? dependancy;
   int type;
-  Function function;
-  Map<int, String> listItems;
-  String label;
-  String description;
-  int format;
-  int max;
-  int min;
-  var value;
+  Function()? function;
+  late Map<int, String> listItems;
+  late String label;
+  late String description;
+  int? format;
+  int? max;
+  int? min;
+  dynamic value;
 
-  static const int TYPE_HEADER            = 100;
-  static const int TYPE_BOOL              = 101;
-  static const int TYPE_FUNCTION          = 102;
-  static const int TYPE_LIST              = 103;
-  static const int TYPE_DATE              = 104;
-  static const int TYPE_TIME              = 105;
-  static const int TYPE_TEXT              = 106;
-  static const int TYPE_INT               = 107;
+  static const int TYPE_HEADER = 100;
+  static const int TYPE_BOOL = 101;
+  static const int TYPE_FUNCTION = 102;
+  static const int TYPE_LIST = 103;
+  static const int TYPE_DATE = 104;
+  static const int TYPE_TIME = 105;
+  static const int TYPE_TEXT = 106;
+  static const int TYPE_INT = 107;
 
-  static const int FORMAT_TEXT_PLAIN      = 200; // Default Text Format
-  static const int FORMAT_TEXT_EMAIL      = 201;
-  static const int FORMAT_TEXT_PHONE      = 202;
-  static const int FORMAT_TEXT_URI        = 203;
+  static const int FORMAT_TEXT_PLAIN = 200; // Default Text Format
+  static const int FORMAT_TEXT_EMAIL = 201;
+  static const int FORMAT_TEXT_PHONE = 202;
+  static const int FORMAT_TEXT_URI = 203;
 
-  static const int FORMAT_BOOL_SWITCH     = 210; // Default Bool Format
-  static const int FORMAT_BOOL_CHECKBOX   = 211;
+  static const int FORMAT_BOOL_SWITCH = 210; // Default Bool Format
+  static const int FORMAT_BOOL_CHECKBOX = 211;
 
-  static const int FORMAT_INT_SLIDER      = 220; // Default Int Format
-  static const int FORMAT_INT_TEXT        = 221;
+  static const int FORMAT_INT_SLIDER = 220; // Default Int Format
+  static const int FORMAT_INT_TEXT = 221;
 
-  static const int FORMAT_DATE_DMY        = 230; // Default Date Format
-  static const int FORMAT_DATE_MDY        = 231;
-  static const int FORMAT_DATE_YMD        = 232;
+  static const int FORMAT_DATE_DMY = 230; // Default Date Format
+  static const int FORMAT_DATE_MDY = 231;
+  static const int FORMAT_DATE_YMD = 232;
 
-  static const int FORMAT_LIST_DROPDOWN   = 240; // Default List Format
-  static const int FORMAT_LIST_DIALOG     = 241;
+  static const int FORMAT_LIST_DROPDOWN = 240; // Default List Format
+  static const int FORMAT_LIST_DIALOG = 241;
 
-  Pref({
-    this.prefKey,
-    this.defVal,
-    this.enabled = true,
-    this.visible = true,
-    this.dependancy,
-    this.type,
-    this.function,
-    this.listItems,
-    this.label,
-    this.description,
-    this.format,
-    this.max,
-    this.min
-  }) : assert(prefKey != null),
-        assert(type != null);
+  Pref(
+      {required this.prefKey,
+      this.defVal,
+      this.enabled = true,
+      this.visible = true,
+      this.dependancy,
+      required this.type,
+      this.function,
+      Map<int, String>? listItems,
+      String? label,
+      String? description,
+      this.format,
+      this.max,
+      this.min}) {
+    this.listItems = listItems ?? {};
+    this.label = label ?? prefKey;
+    this.description = description ?? "";
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
 class Prefs {
-
   List<Pref> preferences;
 
-  Prefs ({ this.preferences }) {
-    Map<String, Pref> prefs = Map();
-    for (Pref p in this.preferences)
+  Prefs({this.preferences = const []}) {
+    Map<String, Pref> prefs = {};
+    for (Pref p in preferences) {
       if (!prefs.containsKey(p.prefKey)) {
         prefs[p.prefKey] = p;
       } else {
+        // ignore: avoid_print
         print('WARNING: Duplicate prefKey - preference discarded.');
       }
-    this.preferences = prefs.values.toList();
+    }
+    preferences = prefs.values.toList();
   }
 
-//  Future<void> _initPrefs () async {
-//    for (int i = 0; i < this.preferences.length; i++) {
-//      switch (this.preferences[i].type) {
-//        case Pref.TYPE_BOOL:
-//          this.preferences[i].value = await getBool(this.preferences[i].prefKey);
-//          break;
-//        case Pref.TYPE_TEXT:
-//          this.preferences[i].value = await getString(this.preferences[i].prefKey);
-//          break;
-//        case Pref.TYPE_INT:
-//        case Pref.TYPE_LIST:
-//        this.preferences[i].value = await getInt(this.preferences[i].prefKey);
-//          break;
-//        case Pref.TYPE_DATE:
-//        case Pref.TYPE_TIME:
-//        this.preferences[i].value = await getDateTime(this.preferences[i].prefKey);
-//          break;
-//        case Pref.TYPE_HEADER:
-//        case Pref.TYPE_FUNCTION:
-//          break;
-//      }
-//    }
-//  }
-
-  Future<bool> getBool (String prefKey) async {
+  Future<bool?> getBool(String prefKey) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    Pref p = getPref (prefKey);
+    Pref? p = getPref(prefKey);
     if (p == null) {
       return false;
     } else {
-      return prefs.getBool(prefKey) ?? p.defVal.toString().toLowerCase() == 'true';
+      return prefs.getBool(prefKey) ??
+          p.defVal.toString().toLowerCase() == 'true';
     }
   }
 
-  Future<void> setBool (String prefKey, bool value) async {
+  Future<void> setBool(String prefKey, bool value) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    Pref p = getPref (prefKey);
-    if (p != null)
-      await prefs.setBool(prefKey, value);
+    Pref? p = getPref(prefKey);
+    if (p != null) await prefs.setBool(prefKey, value);
   }
 
-  Future<String> getString (String prefKey) async {
+  Future<String?> getString(String prefKey) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    Pref p = getPref (prefKey);
+    Pref? p = getPref(prefKey);
     if (p == null) {
       return null;
     } else {
@@ -144,16 +123,15 @@ class Prefs {
     }
   }
 
-  Future<void> setString (String prefKey, String value) async {
+  Future<void> setString(String prefKey, String value) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    Pref p = getPref (prefKey);
-    if (p != null)
-      await prefs.setString(prefKey, value);
+    Pref? p = getPref(prefKey);
+    if (p != null) await prefs.setString(prefKey, value);
   }
 
-  Future<int> getInt (String prefKey) async {
+  Future<int?> getInt(String prefKey) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    Pref p = getPref (prefKey);
+    Pref? p = getPref(prefKey);
     if (p == null) {
       return null;
     } else {
@@ -161,29 +139,27 @@ class Prefs {
     }
   }
 
-  Future<void> setInt (String prefKey, int value) async {
+  Future<void> setInt(String prefKey, int value) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    Pref p = getPref (prefKey);
-    if (p != null)
-      await prefs.setInt(prefKey, value);
+    Pref? p = getPref(prefKey);
+    if (p != null) await prefs.setInt(prefKey, value);
   }
 
-  Future<void> setDateTime (String prefKey, DateTime value) async {
+  Future<void> setDateTime(String prefKey, DateTime value) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    Pref p = getPref (prefKey);
-    if (p != null)
-      await prefs.setString(prefKey, value.toIso8601String());
+    Pref? p = getPref(prefKey);
+    if (p != null) await prefs.setString(prefKey, value.toIso8601String());
   }
 
-  Future<DateTime> getDateTime (String prefKey) async {
+  Future<DateTime?> getDateTime(String prefKey) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    Pref p = getPref (prefKey);
+    Pref? p = getPref(prefKey);
     if (p == null) {
       return null;
     } else if (prefs.getString(prefKey) == null) {
       return DateTime.parse(p.defVal.toString());
     } else {
-      return DateTime.parse(prefs.getString(prefKey));
+      return DateTime.parse(prefs.getString(prefKey)!);
     }
   }
 
@@ -194,36 +170,35 @@ class Prefs {
     }
   }
 
-  List<Pref> getPrefs () {
-    return this.preferences;
+  List<Pref> getPrefs() {
+    return preferences;
   }
 
-  Pref getPref (String prefKey) {
+  Pref? getPref(String prefKey) {
     int id = _getPrefId(prefKey);
-    return id >= 0 ? this.preferences[id] : null;
+    return id >= 0 ? preferences[id] : null;
   }
 
-  void setPref (Pref pref) {
+  void setPref(Pref pref) {
     int id = _getPrefId(pref.prefKey);
     if (id > -1) {
-      this.preferences[id] = pref;
+      preferences[id] = pref;
     } else {
-      this.preferences.add(pref);
+      preferences.add(pref);
     }
   }
 
-  void removePref (Pref pref) {
+  void removePref(Pref pref) {
     int id = _getPrefId(pref.prefKey);
-    if (id > -1)
-      this.preferences.removeAt(id);
+    if (id > -1) preferences.removeAt(id);
   }
 
-  Future<Pref> overrideEnabledAttr (Pref pref) async {
-    if (pref != null && pref.dependancy != null) {
-      Pref parent = getPref(pref.dependancy);
+  Future<Pref> overrideEnabledAttr(Pref pref) async {
+    if ((pref.dependancy != null)) {
+      Pref? parent = getPref(pref.dependancy!);
       if (parent != null && parent.type == Pref.TYPE_BOOL) {
         if (parent.value == null) {
-          pref.enabled = await getBool(parent.prefKey);
+          pref.enabled = await getBool(parent.prefKey) ?? false;
         } else {
           pref.enabled = parent.value;
         }
@@ -234,145 +209,140 @@ class Prefs {
   }
 
   void buildPreferencesScreen(BuildContext context, String title) {
-    if (this.preferences != null &&this.preferences.length > 0)
+    if (preferences.isNotEmpty) {
       Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => PreferenceContainer(
-                  preferences: this.preferences,
-                  title: title
-              )
-          )
-      );
+              builder: (context) =>
+                  PreferenceContainer(preferences: preferences, title: title)));
+    }
   }
 
-  int _getPrefId (String prefKey) {
-    for (int i = 0; i < this.preferences.length; i++) {
-      if (this.preferences[i].prefKey == prefKey) {
+  int _getPrefId(String prefKey) {
+    for (int i = 0; i < preferences.length; i++) {
+      if (preferences[i].prefKey == prefKey) {
         return i;
       }
     }
     return -1;
   }
-
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
 class PreferenceContainer extends StatefulWidget {
-
   final List<Pref> preferences;
   final String title;
 
-  PreferenceContainer ({ this.preferences, this.title });
+  // ignore: use_key_in_widget_constructors
+  const PreferenceContainer({required this.preferences, required this.title});
 
   @override
-  _PreferenceContainerState createState() => _PreferenceContainerState();
+  State<PreferenceContainer> createState() => _PreferenceContainerState();
 }
 
 class _PreferenceContainerState extends State<PreferenceContainer> {
-  Prefs prefs;
+  late Prefs prefs;
 
   @override
   void initState() {
-    for (int i = 0; i < widget.preferences.length; i++)
+    for (int i = 0; i < widget.preferences.length; i++) {
       widget.preferences[i].value = null;
-    this.prefs = new Prefs(preferences: widget.preferences);
+    }
+    prefs = Prefs(preferences: widget.preferences);
     super.initState();
   }
 
   void savePrefLocally(Pref pref) {
-    if (mounted)
+    if (mounted) {
       setState(() {
-        this.prefs.setPref(pref);
+        prefs.setPref(pref);
       });
+    }
   }
 
-  Future<void> _saveAllPrefs () async {
-    for (Pref pref in this.prefs.getPrefs()) {
+  Future<void> _saveAllPrefs() async {
+    for (Pref pref in prefs.getPrefs()) {
       if (pref.visible) {
         switch (pref.type) {
           case Pref.TYPE_TEXT:
-            this.prefs.setString(pref.prefKey, pref.value);
+            prefs.setString(pref.prefKey, pref.value);
             break;
           case Pref.TYPE_INT:
           case Pref.TYPE_LIST:
-            this.prefs.setInt(pref.prefKey, pref.value);
+            prefs.setInt(pref.prefKey, pref.value);
             break;
           case Pref.TYPE_BOOL:
-            this.prefs.setBool(pref.prefKey, pref.value);
+            prefs.setBool(pref.prefKey, pref.value);
             break;
           case Pref.TYPE_DATE:
           case Pref.TYPE_TIME:
-            this.prefs.setDateTime(pref.prefKey, pref.value);
+            prefs.setDateTime(pref.prefKey, pref.value);
             break;
         }
       }
     }
-    Navigator.pop(this.context);
+    Navigator.pop(context);
   }
 
-  Future<List<Widget>> _getPrefItems () async {
+  Future<List<Widget>> _getPrefItems() async {
     List<Widget> items = [];
 
-    for (Pref pref in this.prefs.getPrefs()) {
+    for (Pref pref in prefs.getPrefs()) {
       if (pref.visible) {
-
-        switch(pref.type) {
+        switch (pref.type) {
           case Pref.TYPE_TEXT:
-            if (pref.value == null)
-              pref.value = await this.prefs.getString(pref.prefKey);
-            pref = await this.prefs.overrideEnabledAttr(pref);
-            items.add(
-                PrefText(pref: pref, context: this.context, callback: savePrefLocally).getItem()
-            );
+            pref.value ??= await prefs.getString(pref.prefKey);
+            pref = await prefs.overrideEnabledAttr(pref);
+            items.add(PrefText(
+                    pref: pref, context: context, callback: savePrefLocally)
+                .getItem());
             break;
           case Pref.TYPE_INT:
-            if (pref.value == null)
-              pref.value = await this.prefs.getInt(pref.prefKey);
-            pref = await this.prefs.overrideEnabledAttr(pref);
+            pref.value ??= await prefs.getInt(pref.prefKey);
+            pref = await prefs.overrideEnabledAttr(pref);
             items.add(
-                PrefInt(pref: pref, context: this.context, callback: savePrefLocally).getItem()
-            );
+                PrefInt(pref: pref, context: context, callback: savePrefLocally)
+                    .getItem());
             break;
           case Pref.TYPE_LIST:
-            if (pref.value == null)
-              pref.value = await this.prefs.getInt(pref.prefKey);
-            pref = await this.prefs.overrideEnabledAttr(pref);
-            items.add(
-                PrefList(pref: pref, context: this.context, callback: savePrefLocally).getItem()
-            );
+            pref.value ??= await prefs.getInt(pref.prefKey);
+            pref = await prefs.overrideEnabledAttr(pref);
+            items.add(PrefList(
+                    pref: pref, context: context, callback: savePrefLocally)
+                .getItem());
             break;
           case Pref.TYPE_BOOL:
-            if (pref.value == null)
-              pref.value = await this.prefs.getBool(pref.prefKey);
-            pref = await this.prefs.overrideEnabledAttr(pref);
-            items.add(
-                PrefBool(pref: pref, context: this.context, callback: savePrefLocally).getItem()
-            );
+            pref.value ??= await prefs.getBool(pref.prefKey);
+            pref = await prefs.overrideEnabledAttr(pref);
+            items.add(PrefBool(
+                    pref: pref, context: context, callback: savePrefLocally)
+                .getItem());
             break;
           case Pref.TYPE_DATE:
-            if (pref.value == null)
-              pref.value = await this.prefs.getDateTime(pref.prefKey);
-            pref = await this.prefs.overrideEnabledAttr(pref);
-            items.add(
-                PrefDate(pref: pref, context: this.context, callback: savePrefLocally).getItem()
-            );
+            pref.value ??= await prefs.getDateTime(pref.prefKey);
+            pref = await prefs.overrideEnabledAttr(pref);
+            items.add(PrefDate(
+                    pref: pref, context: context, callback: savePrefLocally)
+                .getItem());
             break;
           case Pref.TYPE_TIME:
-            if (pref.value == null)
-              pref.value = await this.prefs.getDateTime(pref.prefKey);
-            pref = await this.prefs.overrideEnabledAttr(pref);
-            items.add(
-                PrefTime(pref: pref, context: this.context, callback: savePrefLocally).getItem()
-            );
+            pref.value ??= await prefs.getDateTime(pref.prefKey);
+            pref = await prefs.overrideEnabledAttr(pref);
+            items.add(PrefTime(
+                    pref: pref, context: context, callback: savePrefLocally)
+                .getItem());
             break;
           case Pref.TYPE_FUNCTION:
-            pref = await this.prefs.overrideEnabledAttr(pref);
-            items.add(PrefFunction(pref: pref,).getItem());
+            pref = await prefs.overrideEnabledAttr(pref);
+            items.add(PrefFunction(
+              pref: pref,
+            ).getItem());
             break;
           case Pref.TYPE_HEADER:
-            items.add(PrefHeader(pref: pref,).getItem());
+            items.add(PrefHeader(
+              pref: pref,
+            ).getItem());
             break;
         }
       }
@@ -385,30 +355,31 @@ class _PreferenceContainerState extends State<PreferenceContainer> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title == null ? "" : widget.title),
+        title: Text(widget.title),
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.check),
+            icon: const Icon(Icons.check),
             onPressed: () => _saveAllPrefs(),
           )
         ],
       ),
-      body: FutureBuilder(
+      body: FutureBuilder<List<Widget>>(
         future: _getPrefItems(),
         builder: (context, items) {
-          if (items.hasData && mounted) {
+          if (items.hasData && items.data != null && mounted) {
             return ListView.builder(
-                itemCount: items.data.length,
+                itemCount: items.data!.length,
                 itemBuilder: (BuildContext context, int index) {
-                  return items.data[index];
-                }
-            );
+                  return items.data![index];
+                });
           } else {
-            return Container(height: 0.0, width: 0.0,);
+            return const SizedBox(
+              height: 0.0,
+              width: 0.0,
+            );
           }
         },
       ),
     );
   }
-
 }

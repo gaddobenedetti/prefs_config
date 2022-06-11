@@ -1,38 +1,39 @@
 import 'package:flutter/material.dart';
-import 'package:prefs_config/prefs_config.dart';
-import 'package:prefs_config/shared/pref_shared.dart';
+import '../prefs_config.dart';
+import '../shared/pref_shared.dart';
 
 class PrefBool extends PrefItem {
-  Pref pref;
-  BuildContext context;
-  Function actionFunc;
-  Function callback;
-
-  PrefBool({this.pref, this.context, this.callback}) {
-    this.actionFunc = null;
-  }
+  PrefBool(
+      {required Pref pref,
+      required BuildContext context,
+      required Function callback})
+      : super(pref: pref, context: context, callback: callback);
 
   @override
   Widget prefValue() {
-    switch (this.pref.format) {
+    switch (pref.format) {
       case Pref.FORMAT_BOOL_CHECKBOX:
         return Checkbox(
             value: pref.value,
-            onChanged: !this.pref.enabled
+            onChanged: !pref.enabled
                 ? null
                 : (bool) {
-                    this.pref.value = bool;
-                    this.callback(this.pref);
+                    pref.value = bool;
+                    if (callback != null) {
+                      callback!(pref);
+                    }
                   });
       case Pref.FORMAT_BOOL_SWITCH:
       default:
         return Switch(
             value: pref.value,
-            onChanged: !this.pref.enabled
+            onChanged: !pref.enabled
                 ? null
                 : (bool) {
-                    this.pref.value = bool;
-                    this.callback(this.pref);
+                    pref.value = bool;
+                    if (callback != null) {
+                      callback!(pref);
+                    }
                   });
     }
   }

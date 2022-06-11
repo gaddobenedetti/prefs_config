@@ -1,27 +1,35 @@
+// ignore_for_file: use_key_in_widget_constructors
+
 import 'package:flutter/material.dart';
-import 'package:prefs_config/prefs_config.dart';
+import '../prefs_config.dart';
 
 class PrefSliderEdit extends StatefulWidget {
   final Pref pref;
 
-  const PrefSliderEdit({this.pref});
+  const PrefSliderEdit({required this.pref});
 
   @override
-  _PrefSliderEditState createState() => _PrefSliderEditState();
+  State<PrefSliderEdit> createState() => _PrefSliderEditState();
 }
 
 class _PrefSliderEditState extends State<PrefSliderEdit> {
-  double _value;
-  double _min;
-  double _max;
-  bool _canUpdate;
+  late double _value;
+  late double _min;
+  late double _max;
+  late bool _canUpdate;
 
   @override
   void initState() {
-    this._value = double.parse(widget.pref.value.toString());
-    this._min = double.parse(widget.pref.min.toString());
-    this._max = double.parse(widget.pref.max.toString());
-    this._canUpdate = false;
+    _value = widget.pref.value == null
+        ? 0.0
+        : double.parse(widget.pref.value.toString());
+    _min = widget.pref.value == null
+        ? 0.0
+        : double.parse(widget.pref.min.toString());
+    _max = widget.pref.value == null
+        ? 0.0
+        : double.parse(widget.pref.max.toString());
+    _canUpdate = false;
     super.initState();
   }
 
@@ -36,20 +44,20 @@ class _PrefSliderEditState extends State<PrefSliderEdit> {
       Column(
         children: <Widget>[
           Slider(
-            min: this._min,
-            max: this._max,
-            value: this._value,
+            min: _min,
+            max: _max,
+            value: _value,
             onChanged: (newValue) {
               setState(() {
-                this._canUpdate = _validatePref(newValue);
-                this._value = newValue;
+                _canUpdate = _validatePref(newValue);
+                _value = newValue;
               });
             },
           ),
           Center(
             child: Text(
               _value.floor().toString(),
-              style: TextStyle(
+              style: const TextStyle(
                 fontFamily: "Roboto",
                 fontSize: 22.0,
                 fontWeight: FontWeight.bold,
@@ -62,7 +70,7 @@ class _PrefSliderEditState extends State<PrefSliderEdit> {
 
     return AlertDialog(
       title: Text(widget.pref.label),
-      content: Container(
+      content: SizedBox(
         width: MediaQuery.of(context).size.width,
         child: ListView.builder(
             shrinkWrap: true,
@@ -73,16 +81,17 @@ class _PrefSliderEditState extends State<PrefSliderEdit> {
       ),
       actions: <Widget>[
         IconButton(
-            icon: Icon(Icons.check),
-            color: this._canUpdate ? Colors.green : Colors.grey,
+            icon: const Icon(Icons.check),
+            color: _canUpdate ? Colors.green : Colors.grey,
             onPressed: () {
-              if (this._canUpdate)
+              if (_canUpdate) {
                 setState(() {
-                  Navigator.pop(context, this._value.floor());
+                  Navigator.pop(context, _value.floor());
                 });
+              }
             }),
         IconButton(
-            icon: Icon(Icons.cancel),
+            icon: const Icon(Icons.cancel),
             color: Colors.red,
             onPressed: () {
               setState(() {

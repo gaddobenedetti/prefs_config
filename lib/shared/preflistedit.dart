@@ -1,45 +1,47 @@
+// ignore_for_file: use_key_in_widget_constructors
+
 import 'package:flutter/material.dart';
-import 'package:prefs_config/prefs_config.dart';
+import '../prefs_config.dart';
 
 class PrefListEdit extends StatefulWidget {
-
   final Pref pref;
 
-  const PrefListEdit({this.pref});
+  const PrefListEdit({required this.pref});
 
   @override
-  _PrefListEditState createState() => _PrefListEditState();
+  State<PrefListEdit> createState() => _PrefListEditState();
 }
 
 class _PrefListEditState extends State<PrefListEdit> {
-
   @override
   void initState() {
-
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    String title = widget.pref.label == null ? "" : widget.pref.label.toString();
     return AlertDialog(
-      title: Text(title),
-      content: Container(
+      title: Text(widget.pref.label),
+      content: SizedBox(
         width: MediaQuery.of(context).size.width,
         child: ListView.builder(
             shrinkWrap: true,
             itemCount: widget.pref.listItems.length,
             itemBuilder: (BuildContext context, int i) {
               FontWeight selected = FontWeight.normal;
-              if (widget.pref.value == widget.pref.listItems.keys.toList()[i])
+              if (widget.pref.value == widget.pref.listItems.keys.toList()[i]) {
                 selected = FontWeight.bold;
+              }
+              String value = widget.pref.listItems.containsKey(i)
+                  ? widget.pref.listItems[i]!
+                  : "";
               return Card(
                 child: Center(
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: FlatButton(
+                    child: TextButton(
                       child: Text(
-                        widget.pref.listItems[i],
+                        value,
                         style: TextStyle(
                           fontFamily: "Roboto",
                           fontSize: 18.0,
@@ -56,8 +58,7 @@ class _PrefListEditState extends State<PrefListEdit> {
                   ),
                 ),
               );
-            }
-        ),
+            }),
       ),
     );
   }

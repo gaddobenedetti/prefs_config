@@ -1,58 +1,64 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
-import 'package:prefs_config/prefs_config.dart';
-import 'package:prefs_config/shared/pref_shared.dart';
-import 'package:prefs_config/shared/preftextedit.dart';
-import 'package:prefs_config/shared/prefslideredit.dart';
+import '../prefs_config.dart';
+import '../shared/pref_shared.dart';
+import '../shared/preftextedit.dart';
+import '../shared/prefslideredit.dart';
 
 class PrefInt extends PrefItem {
-
-  Pref pref;
-  BuildContext context;
-  Function actionFunc;
-  Function callback;
-
-  PrefInt({this.pref, this.context, this.callback}) {
-    this.actionFunc = editDialog;
+  PrefInt(
+      {required Pref pref,
+      required BuildContext context,
+      required Function callback})
+      : super(pref: pref, context: context, callback: callback) {
+    actionFunc = editDialog;
   }
 
   @override
-  Widget prefValue () {
+  Widget prefValue() {
     String text = pref.value.toString();
-    if(text.length > 100)
-      text = text.substring(0, 97) + '...';
+    if (text.length > 100) text = '${text.substring(0, 97)}...';
     return Text(
       text,
       style: TextStyle(
         fontFamily: "Roboto",
         fontSize: 18.0,
-        color: this.pref.enabled ? null : Colors.grey,
+        color: pref.enabled ? null : Colors.grey,
       ),
     );
   }
 
-  Future<void> editDialog () async {
-    int result;
+  Future<void> editDialog() async {
+    int? result;
 
     if (pref.format == Pref.FORMAT_INT_SLIDER &&
-        pref.min != null && pref.max != null && pref.min <= pref.max) {
+        context != null &&
+        pref.min != null &&
+        pref.max != null &&
+        pref.min! <= pref.max!) {
       result = await showDialog(
-        context: this.context,
-        builder: (BuildContext context) => PrefSliderEdit(pref: this.pref,),
+        context: context!,
+        builder: (BuildContext context) => PrefSliderEdit(
+          pref: pref,
+        ),
       );
-    } else {
-      String numStr = await showDialog(
-        context: this.context,
-        builder: (BuildContext context) => PrefTextEdit(pref: this.pref,),
+    } else if (context != null) {
+      String? numStr = await showDialog(
+        context: context!,
+        builder: (BuildContext context) => PrefTextEdit(
+          pref: pref,
+        ),
       );
-      result = int.parse(numStr);
+      if (numStr != null) {
+        result = int.parse(numStr);
+      }
     }
 
     if (result != null) {
-      this.pref.value = result;
-      this.callback(this.pref);
+      if (callback != null) {
+        pref.value = result;
+        callback!(pref);
+      }
     }
-
   }
-
 }

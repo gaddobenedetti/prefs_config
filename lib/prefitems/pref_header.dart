@@ -1,27 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:prefs_config/prefs_config.dart';
-import 'package:prefs_config/shared/pref_shared.dart';
+import '../prefs_config.dart';
+import '../shared/pref_shared.dart';
 
 class PrefHeader extends PrefItem {
-  Pref pref;
-  Function actionFunc;
-
-  PrefHeader({this.pref}) {
-    this.actionFunc = null;
-  }
+  PrefHeader({required Pref pref}) : super(pref: pref);
 
   @override
   Widget prefWrapper() {
-    if (pref.label == null || pref.label.length == 0) {
-      return Container(width: 0.0, height: 0.0);
+    if (pref.label.isEmpty) {
+      return const SizedBox(width: 0.0, height: 0.0);
     } else {
       return Card(
-        color: pref.defVal == null ? Colors.white30 : pref.defVal,
+        color: pref.defVal ?? Colors.white30,
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Text(
             pref.label.toString(),
-            style: TextStyle(
+            style: const TextStyle(
                 fontFamily: "Roboto",
                 fontSize: 20.0,
                 fontWeight: FontWeight.bold),

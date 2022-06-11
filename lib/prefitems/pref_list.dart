@@ -1,54 +1,58 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
-import 'package:prefs_config/prefs_config.dart';
-import 'package:prefs_config/shared/pref_shared.dart';
-import 'package:prefs_config/shared/preflistedit.dart';
+import '../prefs_config.dart';
+import '../shared/pref_shared.dart';
+import '../shared/preflistedit.dart';
 
 class PrefList extends PrefItem {
-  Pref pref;
-  BuildContext context;
-  Function actionFunc;
-  Function callback;
-
-  PrefList({this.pref, this.context, this.callback}) {
-    this.actionFunc =
+  PrefList(
+      {required Pref pref,
+      required BuildContext context,
+      required Function callback})
+      : super(pref: pref, context: context, callback: callback) {
+    actionFunc =
         this.pref.format == Pref.FORMAT_LIST_DIALOG ? editDialog : null;
   }
 
   @override
   Widget prefValue() {
-    if (this.pref.listItems != null &&
-        this.pref.listItems.containsKey(this.pref.value)) {
-      switch (this.pref.format) {
+    if (context != null && pref.listItems.containsKey(pref.value)) {
+      switch (pref.format) {
         case Pref.FORMAT_LIST_DIALOG:
-          return Container(
-            width: (MediaQuery.of(context).size.width / 2) - 20.0,
+          String value = pref.listItems.containsKey([pref.value])
+              ? pref.listItems[pref.value]!
+              : "";
+          return SizedBox(
+            width: (MediaQuery.of(context!).size.width / 2) - 20.0,
             child: Text(
-              this.pref.listItems[this.pref.value],
+              value,
               maxLines: 2,
               softWrap: true,
               style: TextStyle(
                 fontFamily: "Roboto",
                 fontSize: 18.0,
-                color: this.pref.enabled ? null : Colors.grey,
+                color: pref.enabled ? null : Colors.grey,
               ),
             ),
           );
-          break;
         case Pref.FORMAT_LIST_DROPDOWN:
         default:
-          List<ListMap> listData = List();
-          for (int key in this.pref.listItems.keys)
-            listData.add(ListMap(key: key, value: this.pref.listItems[key]));
-
-          return Container(
-            width: (MediaQuery.of(context).size.width / 2) - 20.0,
+          List<ListMap> listData = [];
+          for (int key in pref.listItems.keys) {
+            String value =
+                pref.listItems.containsKey(key) ? pref.listItems[key]! : "";
+            listData.add(ListMap(key: key, value: value));
+          }
+          return SizedBox(
+            width: (MediaQuery.of(context!).size.width / 2) - 20.0,
             child: DropdownButton<int>(
               isExpanded: true,
-              value: this.pref.value,
-              onChanged: (int newValue) {
-                this.pref.value = newValue;
-                this.callback(pref);
+              value: pref.value,
+              onChanged: (int? newValue) {
+                if (callback != null && newValue != null) {
+                  pref.value = newValue;
+                  callback!(pref);
+                }
               },
               items: listData.map<DropdownMenuItem<int>>((ListMap value) {
                 return DropdownMenuItem<int>(
@@ -64,22 +68,24 @@ class PrefList extends PrefItem {
           );
       }
     } else {
-      return Container(width: 0.0, height: 0.0);
+      return const SizedBox(width: 0.0, height: 0.0);
     }
   }
 
   Future<void> editDialog() async {
-    if (this.pref.listItems != null && this.pref.listItems.isNotEmpty) {
-      int result = await showDialog(
-        context: this.context,
+    if (context != null && pref.listItems.isNotEmpty) {
+      int? result = await showDialog(
+        context: context!,
         builder: (BuildContext context) => PrefListEdit(
-          pref: this.pref,
+          pref: pref,
         ),
       );
 
       if (result != null) {
-        this.pref.value = result;
-        this.callback(pref);
+        if (callback != null) {
+          pref.value = result;
+          callback!(pref);
+        }
       }
     }
   }
@@ -88,5 +94,5 @@ class PrefList extends PrefItem {
 class ListMap {
   int key;
   String value;
-  ListMap({this.key, this.value});
+  ListMap({required this.key, required this.value});
 }
