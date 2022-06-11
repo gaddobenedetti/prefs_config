@@ -1,3 +1,9 @@
+## 0.9.0 - 11.06.2022
+
+* Updated packages, Flutter and Dart versions
+* Rewrote code to make it null safe
+* General refactoring and cleaning of code
+
 ## 0.8.2 - 07.12.2019
 
 * Updated dependencies.
