@@ -1,6 +1,6 @@
 name: prefs_config
 description: Dart Plugin for generating Settings/Preference screen for Flutter.
-version: 0.9.0
+version: 0.9.1
 homepage: https://github.com/gaddobenedetti/prefs_config
 
 environment:

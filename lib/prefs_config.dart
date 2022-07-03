@@ -2,6 +2,8 @@ library prefs_config;
 
 // ignore_for_file: constant_identifier_names
 
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'dart:async';
 
@@ -96,7 +98,7 @@ class Prefs {
     preferences = prefs.values.toList();
   }
 
-  Future<bool?> getBool(String prefKey) async {
+  Future<bool> getBool(String prefKey) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     Pref? p = getPref(prefKey);
     if (p == null) {
@@ -126,7 +128,9 @@ class Prefs {
   Future<void> setString(String prefKey, String value) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     Pref? p = getPref(prefKey);
-    if (p != null) await prefs.setString(prefKey, value);
+    if (p != null) {
+      await prefs.setString(prefKey, value);
+    }
   }
 
   Future<int?> getInt(String prefKey) async {
@@ -135,20 +139,24 @@ class Prefs {
     if (p == null) {
       return null;
     } else {
-      return prefs.getInt(prefKey) ?? int.parse(p.defVal.toString());
+      return prefs.getInt(prefKey);
     }
   }
 
   Future<void> setInt(String prefKey, int value) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     Pref? p = getPref(prefKey);
-    if (p != null) await prefs.setInt(prefKey, value);
+    if (p != null) {
+      await prefs.setInt(prefKey, value);
+    }
   }
 
   Future<void> setDateTime(String prefKey, DateTime value) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     Pref? p = getPref(prefKey);
-    if (p != null) await prefs.setString(prefKey, value.toIso8601String());
+    if (p != null) {
+      await prefs.setString(prefKey, value.toIso8601String());
+    }
   }
 
   Future<DateTime?> getDateTime(String prefKey) async {
@@ -198,7 +206,7 @@ class Prefs {
       Pref? parent = getPref(pref.dependancy!);
       if (parent != null && parent.type == Pref.TYPE_BOOL) {
         if (parent.value == null) {
-          pref.enabled = await getBool(parent.prefKey) ?? false;
+          pref.enabled = await getBool(parent.prefKey);
         } else {
           pref.enabled = parent.value;
         }
@@ -263,22 +271,24 @@ class _PreferenceContainerState extends State<PreferenceContainer> {
 
   Future<void> _saveAllPrefs() async {
     for (Pref pref in prefs.getPrefs()) {
-      if (pref.visible) {
-        switch (pref.type) {
-          case Pref.TYPE_TEXT:
-            prefs.setString(pref.prefKey, pref.value);
-            break;
-          case Pref.TYPE_INT:
-          case Pref.TYPE_LIST:
-            prefs.setInt(pref.prefKey, pref.value);
-            break;
-          case Pref.TYPE_BOOL:
-            prefs.setBool(pref.prefKey, pref.value);
-            break;
-          case Pref.TYPE_DATE:
-          case Pref.TYPE_TIME:
-            prefs.setDateTime(pref.prefKey, pref.value);
-            break;
+      if (pref.value != null) {
+        if (pref.visible) {
+          switch (pref.type) {
+            case Pref.TYPE_TEXT:
+              prefs.setString(pref.prefKey, pref.value);
+              break;
+            case Pref.TYPE_INT:
+            case Pref.TYPE_LIST:
+              prefs.setInt(pref.prefKey, pref.value);
+              break;
+            case Pref.TYPE_BOOL:
+              prefs.setBool(pref.prefKey, pref.value);
+              break;
+            case Pref.TYPE_DATE:
+            case Pref.TYPE_TIME:
+              prefs.setDateTime(pref.prefKey, pref.value);
+              break;
+          }
         }
       }
     }

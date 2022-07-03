@@ -1,3 +1,7 @@
+## 0.9.1 - 03.01.2022
+
+* Fixed fatal bug that caused crashes when trying to save a null preference value
+
 ## 0.9.0 - 11.06.2022
 
 * Updated packages, Flutter and Dart versions
